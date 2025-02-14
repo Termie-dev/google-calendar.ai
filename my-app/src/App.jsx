@@ -21,7 +21,7 @@ const App = () => {
   const { isLoading } = useSessionContext();
 
   // Google Gemini AI
-  const genAI = new GoogleGenerativeAI("API key");
+  const genAI = new GoogleGenerativeAI("Api key");
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
   if (isLoading) {
