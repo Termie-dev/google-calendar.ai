@@ -21,7 +21,8 @@ const App = () => {
   const { isLoading } = useSessionContext();
 
   // Google Gemini AI
-  const genAI = new GoogleGenerativeAI("Api key");
+  const apiKey = import.meta.env.VITE_GOOGLE_GEMINI_API_KEY;
+  const genAI = new GoogleGenerativeAI(apiKey);
   const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
   if (isLoading) {
@@ -33,10 +34,10 @@ const App = () => {
       const todayDateString = new Date().toISOString().split("T")[0]; // YYYY-MM-DD format
 
       const prompt = `
-        You are an AI that extracts structured event details from user input. 
-        Today's date is **${todayDateString}**. Assume that all relative time references (e.g., "tomorrow", "next Monday") are based on this date.
-      
-        Given a natural language event description, return a JSON object with the following keys:
+        You are an AI event parser that extracts structured event details from user input.
+        Today's date is ${todayDateString}. Assume that all relative time references (e.g., “tomorrow”, “next Monday”) are based on this date.
+
+        Given a natural language event description, return a JSON object with the following structure:
       
         {
           "summary": "string",
@@ -50,7 +51,13 @@ const App = () => {
             "timeZone": "${Intl.DateTimeFormat().resolvedOptions().timeZone}"
           }
         }
-      
+
+        **Instructions:**
+        •	Summary: A short, clear title of the event (e.g., “Team Meeting,” “Doctor's Appointment”).
+        •	Description: A more detailed explanation, including relevant information like participants, topics, and location (e.g., “Meeting with the project team to discuss updates in New York,” “Appointment with Dr. Smith at the downtown clinic”).
+        •	Start/End Time: Extract the exact date and time based on the given input, ensuring correct formatting.
+        •	Time Zone: Use the user's local time zone (${Intl.DateTimeFormat().resolvedOptions().timeZone}) unless another time zone is explicitly mentioned.
+
         **Example Input and Expected Output:**
       
         1. **Input:** "Schedule a team meeting about project updates on February 20, 2025, from 3 PM to 4 PM in New York."
@@ -94,7 +101,7 @@ const App = () => {
         const text = await response.text();
         console.log("Gemini Response:", text);
 
-        const eventDetails = JSON.parse(text);
+        const eventDetails = JSON.parse(text); // Contains the JSON output
         console.log(eventDetails);
 
         const today = new Date();
@@ -106,7 +113,6 @@ const App = () => {
         const endTime = eventDetails.end?.dateTime
           ? new Date(eventDetails.end.dateTime)
           : new Date(startTime.getTime() + 60 * 60 * 1000);
-
 
         setEventName(eventDetails.summary || "No title");
         setEventDescription(eventDetails.description || "No description");
@@ -200,14 +206,16 @@ const App = () => {
             value={isListening ? textInput + (transcript.length ? (textInput.length ? ' ' : '') + transcript : '') : textInput}
             onChange={(e) => { setTextInput(e.target.value); }}
           />
-          <button onClick={processInput}>Extract Event</button>
           <button id='voice-button' 
             onClick={startStopListening}>
             {isListening ? (
               <img src="listening-icon.png" alt="Listening" />
             ) : (
-              <img src="voice-icon.jpg" alt="Voice Input" />
+              <img src="voice-icon.png" alt="Voice Input" />
             )}
+          </button>
+          <button id="enter-button"
+            onClick={processInput}>
           </button>
         </div>
       </footer>
