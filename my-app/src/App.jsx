@@ -95,7 +95,6 @@ const App = () => {
         Now, process this input and return the JSON object:
         "${textInput}"
       `;
-        setTextInput('');
         
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -120,6 +119,7 @@ const App = () => {
         setStart(startTime);
         setEnd(endTime);
         createCalendarEvent()
+        setTextInput('');
     } catch (error) {
         console.error("Error processing input:", error);
     }
