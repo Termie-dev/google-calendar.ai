@@ -14,6 +14,7 @@
 }
 
 header {
+  justify-content: center;
   text-align: center;
 }
 
@@ -70,24 +71,40 @@ h1 {
 }
 
 button {
+  border: none;
+  cursor: pointer;
+}
+
+.text-button {
   display: flex;
   align-items: center;
   justify-content: center;
   width: 5.5em;
   height: 5.5em;
   border-radius: 10px;
-  cursor: pointer;
   transition: border-color 0.25s;
   padding: 0;
   overflow: hidden;
-  border: none;
   margin-left: 5px;
+  border: 3px solid #242424e1;
 }
 #enter-button {
   background-color:#ffffffd4;
 }
 #voice-button {
   background-color: #707070;
+}
+.login-button {
+  width: 10em;
+  height: 2em;
+}
+#sign-in {
+  background-color: #ffffff; /* Google Blue */
+  color: rgb(0, 0, 0);
+}
+#sign-out {
+  background-color: rgb(98, 94, 94);
+  color: white;
 }
 button:hover {
   border-color: #ffffff;

@@ -95,6 +95,7 @@ const App = () => {
         Now, process this input and return the JSON object:
         "${textInput}"
       `;
+        setTextInput('');
         
         const result = await model.generateContent(prompt);
         const response = await result.response;
@@ -118,6 +119,7 @@ const App = () => {
         setEventDescription(eventDetails.description || "No description");
         setStart(startTime);
         setEnd(endTime);
+        createCalendarEvent()
     } catch (error) {
         console.error("Error processing input:", error);
     }
@@ -176,17 +178,18 @@ const App = () => {
     stopListening();
   };
 
+
   return (
     <div>
       <header>
         {session ?
           <>
-            <h1>Welcome {session.user.email}</h1>
-            <button onClick={googleSignOut}>Sign Out</button>
+            <button class="login-button"id="sign-out" onClick={googleSignOut}>Sign Out</button>
+            <h1>Welcome {session.user.user_metadata?.full_name?.split(" ")[0]} {session.user.user_metadata?.full_name?.split(" ")[1]}</h1>
           </>
           :
           <>
-            <button onClick={googleSignIn}>Sign in with Google</button>
+            <button class="login-button"id="sign-in" onClick={googleSignIn}>Sign in with Google</button>
           </>
         }
       </header>
@@ -206,7 +209,7 @@ const App = () => {
             value={isListening ? textInput + (transcript.length ? (textInput.length ? ' ' : '') + transcript : '') : textInput}
             onChange={(e) => { setTextInput(e.target.value); }}
           />
-          <button id='voice-button' 
+          <button class="text-button" id='voice-button' 
             onClick={startStopListening}>
             {isListening ? (
               <img src="listening-icon.png" alt="Listening" />
@@ -214,8 +217,11 @@ const App = () => {
               <img src="voice-icon.png" alt="Voice Input" />
             )}
           </button>
-          <button id="enter-button"
+          <button class="text-button"id="enter-button"
             onClick={processInput}>
+              <img
+              src="arrows.png"
+              />
           </button>
         </div>
       </footer>
